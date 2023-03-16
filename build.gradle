@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.9'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id('org.openrewrite.rewrite') version('5.32.0')
 }
 
 group = 'rhirabay'
@@ -29,6 +30,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    rewrite('org.openrewrite:rewrite-gradle')
+    rewrite('org.openrewrite.recipe:rewrite-spring')
+    implementation(platform('org.openrewrite.recipe:rewrite-recipe-bom:1.17.0'))
 }
 
 dependencyManagement {
@@ -39,4 +43,7 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+rewrite {
+    activeRecipe('springboot.migration2.7to3.0')
 }
