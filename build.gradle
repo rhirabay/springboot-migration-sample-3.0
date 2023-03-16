@@ -1,7 +1,8 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.9'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '3.0.0'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id('org.openrewrite.rewrite') version('5.32.0')
 }
 
 group = 'rhirabay'
@@ -19,19 +20,22 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2021.0.6")
+    set('springCloudVersion', '2022.0.1')
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'io.micrometer:micrometer-tracing'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+    implementation 'org.apache.httpcomponents.client5:httpclient5'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    rewrite('org.openrewrite.recipe:rewrite-spring:+')
+    rewrite('org.openrewrite:rewrite-gradle:+')
 }
 
 dependencyManagement {
@@ -42,4 +46,8 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+rewrite {
+    activeRecipe('springboot.migration2.7to3.0')
 }
